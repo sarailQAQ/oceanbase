@@ -646,8 +646,10 @@ int ObDDLResolver::resolve_default_value(ParseNode *def_node,
         //if (OB_FAIL(ObTimeConverter::str_to_otimestamp(time_str, cvrt_ctx, tmp_type, ot_data))) {
         if (OB_FAIL(ObTimeConverter::literal_timestamp_validate_oracle(time_str, cvrt_ctx, value_type, tz_value))) {
           ret = OB_INVALID_DATE_VALUE;
+          LOG_DEBUG("mydebug origin time_str ", K(time_str));
           time_str.write_front(" for column '", 13);
           time_str.write("'", 1);
+          LOG_DEBUG("mydebug after time_str", K(time_str));
           ObCStringHelper helper;
           LOG_USER_ERROR(OB_INVALID_DATE_VALUE, 9, "TIMESTAMP", helper.convert(time_str));
         } else {
