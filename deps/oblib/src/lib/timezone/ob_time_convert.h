@@ -272,10 +272,11 @@ public:
   int32_t parts_[PART_CNT];
 };
 
-class ObTime
+template<typename Part>
+class ObTimeBase
 {
 public:
-  ObTime()
+  ObTimeBase()
       : mode_(0),
       time_zone_id_(common::OB_INVALID_INDEX),
       transition_type_id_(common::OB_INVALID_INDEX),
@@ -285,7 +286,7 @@ public:
     MEMSET(tz_name_, 0, common::OB_MAX_TZ_NAME_LEN);
     MEMSET(tzd_abbr_, 0, common::OB_MAX_TZ_ABBR_LEN);
   }
-  explicit ObTime(ObDTMode mode)
+  explicit ObTimeBase(ObDTMode mode)
       : mode_(mode),
       time_zone_id_(common::OB_INVALID_INDEX),
       transition_type_id_(common::OB_INVALID_INDEX),
@@ -295,7 +296,7 @@ public:
     MEMSET(tz_name_, 0, common::OB_MAX_TZ_NAME_LEN);
     MEMSET(tzd_abbr_, 0, common::OB_MAX_TZ_ABBR_LEN);
   }
-  ~ObTime() {}
+  ~ObTimeBase() {}
   ObString get_tz_name_str() const
   {
     return ObString(strlen(tz_name_), tz_name_);
@@ -308,7 +309,7 @@ public:
   int set_tzd_abbr(const ObString &tz_abbr);
   DECLARE_TO_STRING;
   ObDTMode  mode_;
-  int32_t   parts_[TOTAL_PART_CNT];
+  Part      parts_[TOTAL_PART_CNT];
   // year:    [1000, 9999].
   // month:   [1, 12].
   // day:     [1, 31].
@@ -329,7 +330,8 @@ public:
   bool is_tz_name_valid_;
 };
 
-typedef ObTime ObInterval;
+typedef ObTimeBase<int32_t> ObTime;
+typedef ObTimeBase<int64_t> ObInterval;
 
 struct ObTimeConstStr {
   ObTimeConstStr() = delete;
@@ -801,7 +803,7 @@ public:
     VIRTUAL_TO_STRING_KV("ptr_", common::ObLenString(ptr_, len_), K(len_), K(value_));
     const char *ptr_;
     int32_t len_;
-    int32_t value_;
+    int64_t value_;
   };
   struct ObTimeDelims {
     ObTimeDelims()
