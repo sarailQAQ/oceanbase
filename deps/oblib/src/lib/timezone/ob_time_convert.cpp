@@ -2166,17 +2166,15 @@ int ObTimeConverter::merge_date_interval(int64_t base_value, const ObString &int
     LOG_WARN("failed to convert string to interval", K(ret));
   } else {
     interval_value = (is_add ? interval_value : -interval_value);
-    if (OB_LIKELY((interval_value <= 0 && INT64_MIN - interval_value <= base_value) ||
-                  (interval_value > 0 && INT64_MAX - interval_value >= base_value))) {
-      value = base_value + interval_value;
+    if (OB_UNLIKELY(__builtin_add_overflow(base_value, interval_value, &value))) {
+      ret = OB_INVALID_DATE_VALUE;
+      LOG_WARN("invalid date", K(ret), K(value));
+    } else {
       if (ZERO_DATETIME != value
           && (value > DATETIME_MAX_VAL || value < DATETIME_MIN_VAL)) {
         ret = OB_INVALID_DATE_VALUE;
         LOG_WARN("invalid date", K(ret), K(value));
       }
-    } else {
-      LOG_WARN("invalid date", K(ret), K(value));
-      ret = OB_INVALID_DATE_VALUE;
     }
   }
   return ret;
@@ -5736,11 +5734,13 @@ int ObTimeConverter::ob_interval_to_interval(const ObInterval &ob_interval, int6
     const int64_t *parts = ob_interval.parts_;
     value = 0;
     for (int32_t i = DT_MDAY; OB_SUCC(ret) && i <= DT_USEC; ++i) {
-      if (OB_LIKELY(abs(value) <= abs((INT64_MAX - parts[i]) / DT_PART_BASE[i]))) {
-        value *= DT_PART_BASE[i];
-        value += parts[i];
-      } else {
+      int64 tmp_value;
+      if (OB_UNLIKELY(__builtin_mul_overflow(value, DT_PART_BASE[i], &tmp_value))) {
         ret = OB_INVALID_DATE_VALUE;
+      } else if (OB_UNLIKELY(__builtin_add_overflow(tmp_value, parts[i], &tmp_value))) {
+        ret = OB_INVALID_DATE_VALUE;
+      } else {
+        value = tmp_value;
       }
     }
     if (OB_SUCC(ret) && DT_MODE_NEG & ob_interval.mode_) {
@@ -7677,13 +7677,13 @@ int ObTimeConverter::iso_interval_str_parse(const ObString &str, ObIntervalParts
   return ret;
 }
 
-template<typename Part>
-DEF_TO_STRING(ObTimeBase<Part>)
+template<typename PartType>
+DEF_TO_STRING(ObTimeBase<PartType>)
 {
   int64_t pos = 0;
   J_OBJ_START();
   J_KV(K(mode_),
-       "parts", ObArrayWrap<Part>(parts_, TOTAL_PART_CNT),
+       "parts", ObArrayWrap<PartType>(parts_, TOTAL_PART_CNT),
        "tz_name", ObString(OB_MAX_TZ_NAME_LEN, tz_name_),
        "tzd_abbr", ObString(OB_MAX_TZ_ABBR_LEN, tzd_abbr_),
        K_(time_zone_id),
@@ -7692,6 +7692,9 @@ DEF_TO_STRING(ObTimeBase<Part>)
   J_OBJ_END();
   return pos;
 }
+
+template class ObTimeBase<int32_t>;
+template class ObTimeBase<int64_t>;
 
 } // namesapce common
 } // namespace oceanbase

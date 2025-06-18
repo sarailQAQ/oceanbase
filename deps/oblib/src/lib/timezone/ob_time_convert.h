@@ -272,7 +272,7 @@ public:
   int32_t parts_[PART_CNT];
 };
 
-template<typename Part>
+template<typename PartType>
 class ObTimeBase
 {
 public:
@@ -309,7 +309,7 @@ public:
   int set_tzd_abbr(const ObString &tz_abbr);
   DECLARE_TO_STRING;
   ObDTMode  mode_;
-  Part      parts_[TOTAL_PART_CNT];
+  PartType      parts_[TOTAL_PART_CNT];
   // year:    [1000, 9999].
   // month:   [1, 12].
   // day:     [1, 31].
