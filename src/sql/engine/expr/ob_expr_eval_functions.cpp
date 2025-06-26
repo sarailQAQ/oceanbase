@@ -448,6 +448,7 @@
 #include "ob_expr_map_keys.h"
 #include "ob_expr_current_catalog.h"
 #include "ob_expr_check_catalog_access.h"
+#include "ob_expr_func_round_ties_to_even.h"
 
 namespace oceanbase
 {
@@ -1398,6 +1399,8 @@ static ObExpr::EvalFunc g_expr_eval_functions[] = {
   ObExprMapValues::eval_map_values,                                    /* 846 */
   ObExprSpivDim::generate_spiv_dim,                                    /* 847 */
   ObExprInnerInfoColsColumnKeyPrinter::eval_column_column_key,         /* 848 */
+  ObExprRoundTiesToEven::calc_round_expr_numeric1,                     /* 849 */
+  ObExprRoundTiesToEven::calc_round_expr_numeric2,                     /* 850 */
 };
 
 static ObExpr::EvalBatchFunc g_expr_eval_batch_functions[] = {
@@ -1580,6 +1583,7 @@ static ObExpr::EvalBatchFunc g_expr_eval_batch_functions[] = {
   NULL, // ObExprArrayReplace::eval_array_replace_batch,              /* 176 */
   NULL, // ObExprArrayPopfront::eval_array_popfront_batch,            /* 177 */
   NULL, // ObExprUDF::eval_udf_batch                                  /* 178 */
+  ObExprRoundTiesToEven::calc_round_expr_numeric2_batch,              /* 179 */
 };
 
 static ObExpr::EvalVectorFunc g_expr_eval_vector_functions[] = {
@@ -1805,6 +1809,7 @@ static ObExpr::EvalVectorFunc g_expr_eval_vector_functions[] = {
   ObExprRbToArray::eval_rb_to_array_vector,                              /* 219 */
   ObExprRbContains::eval_rb_contains_vector,                             /* 220 */
   NULL, // ObExprUDF::eval_udf_vector                                    /* 221 */
+  ObExprRoundTiesToEven::calc_round_expr_numeric2_vector,                /* 222 */
 };
 
 REG_SER_FUNC_ARRAY(OB_SFA_SQL_EXPR_EVAL,

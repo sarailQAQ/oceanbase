@@ -440,6 +440,7 @@ ob_set_subtarget(ob_sql engine_expr
   engine/expr/ob_expr_func_part_hash.cpp
   engine/expr/ob_expr_func_partition_key.cpp
   engine/expr/ob_expr_func_round.cpp
+  engine/expr/ob_expr_func_round_ties_to_even.cpp
   engine/expr/ob_expr_func_sleep.cpp
   engine/expr/ob_expr_get_package_var.cpp
   engine/expr/ob_expr_get_path.cpp

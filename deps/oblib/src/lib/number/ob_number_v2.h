@@ -275,6 +275,8 @@ public:
     return round_v3(scale, for_oracle_to_char);
   }
 
+  OB_INLINE int round_ties_to_even(const int64_t scale);
+
   template <class T>
   int from_sci_opt(const char *str, const int64_t length, T &allocator,
                    int16_t *precision = NULL, int16_t *scale = NULL,
@@ -2275,6 +2277,13 @@ inline int ObNumber::round_v3(const int64_t scale, const bool for_oracle_to_char
   } else if (OB_FAIL(round_scale_v3_(scale, false, for_oracle_to_char))) {
     LIB_LOG(WARN, "fail to round_scale_oracle_", KPC(this), K(ret));
   }
+  return ret;
+}
+
+int ObNumber::round_ties_to_even(const int64_t scale) 
+{
+  int ret = OB_SUCCESS;
+  
   return ret;
 }
 

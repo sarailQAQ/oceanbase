@@ -509,6 +509,7 @@
 #include "sql/engine/expr/ob_expr_map_keys.h"
 #include "sql/engine/expr/ob_expr_current_catalog.h"
 #include "sql/engine/expr/ob_expr_check_catalog_access.h"
+#include "sql/engine/expr/ob_expr_func_round_ties_to_even.h"
 
 
 
@@ -1284,6 +1285,7 @@ void ObExprOperatorFactory::register_expr_operators()
     REG_OP(ObExprCurrentCatalog);
     REG_OP(ObExprCheckCatalogAccess);
     REG_OP(ObExprInnerInfoColsColumnKeyPrinter);
+    REG_OP(ObExprRoundTiesToEven);
   }();
 // 注册oracle系统函数
   REG_OP_ORCL(ObExprSysConnectByPath);
@@ -1625,6 +1627,7 @@ void ObExprOperatorFactory::register_expr_operators()
   REG_OP_ORCL(ObExprKeyValue);
   REG_OP_ORCL(ObExprCurrentCatalog);
   REG_OP_ORCL(ObExprCheckCatalogAccess);
+  REG_OP_ORCL(ObExprRoundTiesToEven);
 }
 
 bool ObExprOperatorFactory::is_expr_op_type_valid(ObExprOperatorType type)

@@ -39,6 +39,11 @@ ObExprFuncRound::ObExprFuncRound(ObIAllocator &alloc)
 {
 }
 
+ObExprFuncRound::ObExprFuncRound(common::ObIAllocator &alloc, ObExprOperatorType type, const char *name)
+  : ObFuncExprOperator(alloc, type, name, ONE_OR_TWO, VALID_FOR_GENERATED_COL, NOT_ROW_DIMENSION)
+{
+}
+
 ObExprFuncRound::~ObExprFuncRound()
 {
 }

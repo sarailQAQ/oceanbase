@@ -25,11 +25,13 @@ class ObExprFuncRound : public ObFuncExprOperator
 {
 public:
   explicit  ObExprFuncRound(common::ObIAllocator &alloc);
+
+  ObExprFuncRound(common::ObIAllocator &alloc, ObExprOperatorType type, const char *name);
   virtual ~ObExprFuncRound();
   virtual int calc_result_typeN(ObExprResType &type,
                                 ObExprResType *types,
                                 int64_t param_num,
-                                common::ObExprTypeCtx &type_ctx) const;
+                                common::ObExprTypeCtx &type_ctx) const override;
   virtual int cg_expr(ObExprCGCtx &expr_cg_ctx, const ObRawExpr &raw_expr,
                       ObExpr &rt_expr) const override;
   virtual bool need_rt_ctx() const override { return true; }
@@ -112,7 +114,7 @@ public:
     LeftVec *left_vec, ResVec *res_vec, const int64_t &idx);
 
   DECLARE_SET_LOCAL_SESSION_VARS;
-private:
+protected:
   // engine 3.0
   int se_deduce_type(ObExprResType &type,
                      ObExprResType *params,
@@ -123,6 +125,7 @@ private:
                                 ObExprResType &type);
   static int set_res_and_calc_type(ObExprResType *params, int64_t param_num,
                                    common::ObObjType &res_type);
+private:
   // disallow copy
   DISALLOW_COPY_AND_ASSIGN(ObExprFuncRound);
 };
